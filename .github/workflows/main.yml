@@ -1,25 +1,19 @@
-name: Build Dobby for Android
+name: Build Dobby for Android (Stable Fork)
 on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Dobby
+    - name: Checkout Stable Dobby Fork
       uses: actions/checkout@v4
       with:
-        repository: jmpews/Dobby
+        repository: BepInEx/Dobby   # 关键点：换成 Mod 社区维护的修复版仓库
 
-    - name: Setup Android NDK (Downgrade to r21e for stability)
+    - name: Setup Android NDK
       uses: nttld/setup-ndk@v1
       id: setup-ndk
       with:
         ndk-version: r21e
-
-    - name: Nuclear Hack - Physically Remove Apple ASM
-      run: |
-        # 使用 sed 命令，直接在源码中暴力删掉引发报错的苹果专有指令
-        sed -i '/@PAGE/d' source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_bridge_arm64.asm
-        sed -i '/@PAGEOFF/d' source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_bridge_arm64.asm
 
     - name: Build Dobby Static Library
       run: |
